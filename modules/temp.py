@@ -11,19 +11,17 @@ def temp(bot, trigger):
   if not user_input:
     return bot.reply("You need to give me a temp to convert! (e.g. .temp 60F)")
   
-  input_temp = re.findall(r'(?:\d{1,3} ?[fcFC])', user_input)
+  # Extract temp and unit from input string
+  input_temp = re.findall(r'(?:-?\d{1,3} ?[fcFC])', user_input)
 
   if len(input_temp) == 0:
     return bot.reply("I'm expecting a number followed by a unit (e.g. .temp 60F)")
 
-  # Extract temp and unit from input string
-  parsed_val = re.findall(r'(?:-?\d{1,3} ?[fcFC])', input_string)
-
   # Find unit
-  unit = ''.join(filter(str.isalpha, parsed_val[0].lower()))
+  unit = ''.join(filter(str.isalpha, input_temp[0].lower()))
 
-  # Delete unit from parsed_val
-  temp = parsed_val[0].lower().replace(unit, '').strip()
+  # Delete unit from input_temp
+  temp = input_temp[0].lower().replace(unit, '').strip()
 
   if unit == 'c':
     # C = 0.55 x (F-32)
@@ -37,7 +35,7 @@ def temp(bot, trigger):
     output = str(int(round(calc_temp))) + 'C'
 
   bot.say("{} is {}".format(
-    parsed_val[0],
+    input_temp[0],
     output)
   )
 
